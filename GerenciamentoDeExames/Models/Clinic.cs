@@ -15,6 +15,8 @@ namespace GerenciamentoDeExames.Models
 
         public string Cnpj { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public Guid UserId { get; set; }
         public User User { get; set; }
     }

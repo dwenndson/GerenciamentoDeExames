@@ -1,0 +1,40 @@
+﻿@model GerenciamentoDeExames.ViewModels.Exam.ExamViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ExamViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamPath)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExamPath)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DataEnviado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DataEnviado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DataConfirmado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DataConfirmado)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if (Model != null)
+    {
+        @Html.ActionLink(Model.Id.ToString(), "Edit", "Exam");
+        @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> | <a asp-action = "Index" > Back to List</a>*@
+    }
+
+</div>

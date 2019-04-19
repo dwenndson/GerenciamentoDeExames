@@ -4,14 +4,16 @@ using GerenciamentoDeExames.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GerenciamentoDeExames.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190412053349_isActive")]
+    partial class isActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,13 +78,9 @@ namespace GerenciamentoDeExames.Migrations
 
                     b.Property<DateTime>("DataPedido");
 
-                    b.Property<string>("Description");
-
                     b.Property<string>("ExamPath");
 
                     b.Property<Guid>("PacientId");
-
-                    b.Property<string>("Title");
 
                     b.HasKey("Id");
 
@@ -192,26 +190,6 @@ namespace GerenciamentoDeExames.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Clinic.ClinicViewModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Cnpj");
-
-                    b.Property<string>("FirstPhone");
-
-                    b.Property<string>("SecondPhone");
-
-                    b.Property<Guid?>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ClinicViewModel");
-                });
-
             modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Clinic.SaveClinicViewModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -251,60 +229,6 @@ namespace GerenciamentoDeExames.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SaveDoctorViewModel");
-                });
-
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Exam.ExamViewModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid?>("ClinicId");
-
-                    b.Property<DateTime>("DataConfirmado");
-
-                    b.Property<DateTime>("DataEnviado");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("ExamPath");
-
-                    b.Property<Guid?>("PacientId");
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
-
-                    b.HasIndex("PacientId");
-
-                    b.ToTable("ExamViewModel");
-                });
-
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Exam.SaveExamViewModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("ClinicId");
-
-                    b.Property<DateTime>("DataConfirmado");
-
-                    b.Property<DateTime>("DataEnviado");
-
-                    b.Property<string>("Description");
-
-                    b.Property<Guid>("PacientId");
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
-
-                    b.HasIndex("PacientId");
-
-                    b.ToTable("SaveExamViewModel");
                 });
 
             modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Pacient.PacientViewModel", b =>
@@ -465,37 +389,6 @@ namespace GerenciamentoDeExames.Migrations
                     b.HasOne("GerenciamentoDeExames.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Clinic.ClinicViewModel", b =>
-                {
-                    b.HasOne("GerenciamentoDeExames.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Exam.ExamViewModel", b =>
-                {
-                    b.HasOne("GerenciamentoDeExames.ViewModels.Clinic.ClinicViewModel", "Clinic")
-                        .WithMany()
-                        .HasForeignKey("ClinicId");
-
-                    b.HasOne("GerenciamentoDeExames.ViewModels.Pacient.PacientViewModel", "Pacient")
-                        .WithMany()
-                        .HasForeignKey("PacientId");
-                });
-
-            modelBuilder.Entity("GerenciamentoDeExames.ViewModels.Exam.SaveExamViewModel", b =>
-                {
-                    b.HasOne("GerenciamentoDeExames.ViewModels.Clinic.ClinicViewModel", "Clinic")
-                        .WithMany()
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GerenciamentoDeExames.ViewModels.Pacient.PacientViewModel", "Pacient")
-                        .WithMany()
-                        .HasForeignKey("PacientId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using GerenciamentoDeExames.ViewModels.Clinic;
 using GerenciamentoDeExames.ViewModels.Pacient;
 using Microsoft.AspNetCore.Identity;
+using GerenciamentoDeExames.ViewModels.Doctor;
+using GerenciamentoDeExames.ViewModels.Exam;
 
 namespace GerenciamentoDeExames.Data
 {
@@ -22,5 +24,11 @@ namespace GerenciamentoDeExames.Data
         public DbSet<Doctor> Doctor { get; set; }
         public DbSet<Pacient> Pacient { get; set; }
         public DbSet<Clinic> Clinic { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Pacient.SavePacientViewModel> SavePacientViewModel { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Pacient.PacientViewModel> PacientViewModel { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Doctor.SaveDoctorViewModel> SaveDoctorViewModel { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Clinic.SaveClinicViewModel> SaveClinicViewModel { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Exam.SaveExamViewModel> SaveExamViewModel { get; set; }
+        public DbSet<GerenciamentoDeExames.ViewModels.Exam.ExamViewModel> ExamViewModel { get; set; }
     }
 }

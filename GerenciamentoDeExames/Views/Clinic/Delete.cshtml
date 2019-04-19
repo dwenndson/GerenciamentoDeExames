@@ -1,0 +1,39 @@
+﻿@model GerenciamentoDeExames.ViewModels.Clinic.SaveClinicViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+<h3>Para reativar entre em contato com o administrador</h3>
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>SaveClinicViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstPhone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstPhone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SecondPhone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SecondPhone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cnpj)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cnpj)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Desativar" class="btn btn-default" /> |
+        <a asp-action="Edit">Voltar para edição</a>
+    </form>
+</div>

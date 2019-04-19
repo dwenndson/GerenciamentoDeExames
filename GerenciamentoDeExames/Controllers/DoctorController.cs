@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GerenciamentoDeExames.Data;
 using GerenciamentoDeExames.Models;
-using GerenciamentoDeExames.ViewModels.Clinic;
-using Microsoft.AspNetCore.Authorization;
+using GerenciamentoDeExames.ViewModels.Doctor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +13,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GerenciamentoDeExames.Controllers
 {
-    public class ClinicController : Controller
+    public class DoctorController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
 
-        public ClinicController(ApplicationDbContext context, UserManager<User> userManager)
+        public DoctorController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-
-        [Authorize(Roles = "Basic")]
         public ActionResult Create()
         {
             return View();
@@ -35,21 +31,53 @@ namespace GerenciamentoDeExames.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Basic")]
-        public async Task<ActionResult> Create(SaveClinicViewModel saveClinic)
+        public async Task<ActionResult> Create(SaveDoctorViewModel saveDoctor)
         {
             try
             {
-                if (ModelState.IsValid)
+                if(ModelState.IsValid)
                 {
-                    var clinic = Mapper.Map<SaveClinicViewModel, Clinic>(saveClinic);
+                    var doctor = Mapper.Map<SaveDoctorViewModel, Doctor>(saveDoctor);
                     var user = await _userManager.GetUserAsync(HttpContext.User);
 
                     await _userManager.RemoveFromRoleAsync(user, "Basic");
-                    await _userManager.AddToRoleAsync(user, "Clinic");
+                    await _userManager.AddToRoleAsync(user, "Doctor");
 
-                    clinic.UserId = user.Id;
-                    _context.Clinic.Add(clinic);
+                    doctor.UserId = user.Id;
+                    _context.Doctor.Add(doctor);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
+                throw new Exception("Campos inválidos");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> Edit(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return View(Mapper.Map<SaveDoctorViewModel>(await _context.Doctor.SingleOrDefaultAsync(c => c.UserId == user.Id)));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Guid id, SaveDoctorViewModel saveDoctor)
+        {
+            try
+            {
+                if (id != saveDoctor.Id)
+                {
+                    return BadRequest();
+                }
+
+                if(ModelState.IsValid)
+                {
+                    var doctor = Mapper.Map<Doctor>(saveDoctor);
+
+                    _context.Doctor.Update(doctor);
                     _context.SaveChanges();
 
                     return RedirectToAction("Index", "Home");
@@ -62,60 +90,26 @@ namespace GerenciamentoDeExames.Controllers
             }
         }
 
-        [Authorize(Roles = "Clinic")]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            return View(Mapper.Map<SaveClinicViewModel>(await _context.Clinic.SingleOrDefaultAsync(c => c.UserId == user.Id)));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, SaveClinicViewModel saveClinic)
-        {
-            try
-            {
-                if(id != saveClinic.Id)
-                {
-                    return BadRequest();
-                }
-
-                if(ModelState.IsValid)
-                {
-                    var clinic = Mapper.Map<Clinic>(saveClinic);
-                    _context.Clinic.Update(clinic);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index", "Home");
-                }
-                throw new Exception("Campos inválidos");
-                
-            }
-            catch(DbUpdateException e)
-            {
-                return StatusCode(401, e.Message);
-            }
-        }
-
         public async Task<ActionResult> Delete(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            return View(Mapper.Map<SaveClinicViewModel>(await _context.Clinic.SingleOrDefaultAsync(c => c.UserId == user.Id)));
+            return View(Mapper.Map<SaveDoctorViewModel>(await _context.Doctor.SingleOrDefaultAsync(c => c.UserId == user.Id)));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(Guid id, SaveClinicViewModel saveClinic)
+        public async Task<ActionResult> Delete(Guid id, SaveDoctorViewModel saveDoctor)
         {
             try
             {
-                if(id != saveClinic.Id)
+                if (id != saveDoctor.Id)
                 {
                     return BadRequest();
                 }
 
-                var clinic = await _context.Clinic.SingleOrDefaultAsync(c => c.Id == id);
-                clinic.IsActive = false;
-                _context.Clinic.Update(clinic);
+                var doctor = await _context.Doctor.SingleOrDefaultAsync(c => c.Id == id);
+                doctor.IsActive = false;
+                _context.Doctor.Update(doctor);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Home");
@@ -125,7 +119,5 @@ namespace GerenciamentoDeExames.Controllers
                 return View();
             }
         }
-
-        
     }
 }

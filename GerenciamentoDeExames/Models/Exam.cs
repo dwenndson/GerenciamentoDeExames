@@ -9,6 +9,10 @@ namespace GerenciamentoDeExames.Models
     {
         public Guid Id { get; set; }
 
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
         public Guid ClinicId { get; set; }
         public Clinic Clinic { get; set; }
 

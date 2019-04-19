@@ -33,12 +33,23 @@
                     @if (User.IsInRole("Basic"))
                     {
                         <li><a asp-area="" asp-controller="Clinic" asp-action="Create">Cadastrar Clínica</a></li>
-                        <li><a asp-area="" asp-controller="" asp-action="">Cadastrar Médico</a></li>
-                        <li><a asp-area="" asp-controller="Patient" asp-action="Create">Cadastrar Paciente</a></li>
+                        <li><a asp-area="" asp-controller="Doctor" asp-action="Create">Cadastrar Médico</a></li>
+                        <li><a asp-area="" asp-controller="Pacient" asp-action="Create">Cadastrar Paciente</a></li>
                     }
-                    @if(User.IsInRole("Clinic"))
+                    @if (User.IsInRole("Clinic"))
                     {
                         <li><a asp-area="" asp-controller="Clinic" asp-action="Edit">Editar Clínica</a></li>
+                        <li><a asp-area="" asp-route-field="clinic" asp-controller="Exam" asp-action="Index">Exames</a></li>
+                    }
+                    @if (User.IsInRole("Pacient"))
+                    {
+                        <li><a asp-area="" asp-controller="Pacient" asp-action="Edit">Editar Paciente</a></li>
+                        <li><a asp-area="" asp-route-field="pacient" asp-controller="Exam" asp-action="Index">Exames</a></li>
+                    }
+                    @if (User.IsInRole("Doctor"))
+                    {
+                        <li><a asp-area="" asp-controller="Doctor" asp-action="Edit">Editar Médico</a></li>
+                        <li><a asp-area="" asp-route-field="doctor" asp-controller="Exam" asp-action="Index">Exames</a></li>
                     }
                 </ul>
                 <partial name="_LoginPartial" />

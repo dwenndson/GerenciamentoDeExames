@@ -25,26 +25,12 @@ namespace GerenciamentoDeExames.Controllers
             _userManager = userManager;
         }
 
-        // GET: Pacient
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: Pacient/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Pacient/Create
         [Authorize(Roles = "Basic")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Pacient/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Basic")]
@@ -52,16 +38,21 @@ namespace GerenciamentoDeExames.Controllers
         {
             try
             {
-                var pacient = Mapper.Map<SavePacientViewModel, Pacient>(savePacient);
-                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if(ModelState.IsValid)
+                {
+                    var pacient = Mapper.Map<Pacient>(savePacient);
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
 
-                await _userManager.RemoveFromRoleAsync(user, "Basic");
-                await _userManager.AddToRoleAsync(user, "Pacient");
+                    await _userManager.RemoveFromRoleAsync(user, "Basic");
+                    await _userManager.AddToRoleAsync(user, "Pacient");
 
-                _context.Pacient.Add(pacient);
-                await _context.SaveChangesAsync();
+                    pacient.UserId = user.Id;
+                    _context.Pacient.Add(pacient);
+                    await _context.SaveChangesAsync();
 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
+                }
+                throw new Exception("Campos inválidos");
             }
             catch
             {
@@ -69,49 +60,63 @@ namespace GerenciamentoDeExames.Controllers
             }
         }
 
-        // GET: Pacient/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return View(Mapper.Map<SavePacientViewModel>(await _context.Pacient.SingleOrDefaultAsync(p => p.UserId == user.Id)));
         }
 
-        // POST: Pacient/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, SavePacientViewModel savePacient)
+        public ActionResult Edit(Guid id, SavePacientViewModel savePacient)
         {
             try
             {
-                var pacient = Mapper.Map<SavePacientViewModel, Pacient>(savePacient);
-                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if(id != savePacient.Id)
+                {
+                    return BadRequest();
+                }
 
+                if(ModelState.IsValid)
+                {
+                    var pacient = Mapper.Map<Pacient>(savePacient);
+
+                    _context.Pacient.Update(pacient);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Index", "Home");
+                }
+                throw new Exception("Campos inválidos");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> Delete(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return View(Mapper.Map<SavePacientViewModel>(await _context.Pacient.SingleOrDefaultAsync(p => p.UserId == user.Id)));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(Guid id, SavePacientViewModel savePacient)
+        {
+            try
+            {
+                if (id != savePacient.Id)
+                {
+                    return BadRequest();
+                }
+
+                var pacient = await _context.Pacient.SingleOrDefaultAsync(c => c.Id == id);
+                pacient.IsActive = false;
                 _context.Pacient.Update(pacient);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Home");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Pacient/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Pacient/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
             }
             catch
             {

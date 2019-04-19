@@ -1,0 +1,78 @@
+﻿@model IEnumerable<GerenciamentoDeExames.ViewModels.Exam.ExamViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@if (User.IsInRole("Clinic"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+else if (User.IsInRole("Doctor"))
+{
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="field" value="customdoctor" />
+                <div class="form-group col-md-9">
+                    <input name="value" placeholder="Pesquisar" type="search" class="form-control" />
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="submit" class="form-control" value="Pesquisar" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row" style="text-align: center">
+        @if (Model != null)
+        {
+            <h3>Usuário: @Model.ElementAt(0).Pacient.FirstName</h3>
+        }
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataEnviado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="@item.ExamPath" target="_blank">@Html.DisplayFor(modelItem => item.Title)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataEnviado)
+                    </td>
+                    @if (User.IsInRole("Clinic"))
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        </td>
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+</table>
